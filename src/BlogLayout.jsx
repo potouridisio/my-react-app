@@ -6,6 +6,7 @@ const BlogLayout = () => {
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -13,23 +14,27 @@ const BlogLayout = () => {
       .then((data) => {
         setUsers(data);
       });
-  }, []);
 
-  useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/posts")
       .then((res) => res.json())
       .then((data) => {
         setPosts(data);
       });
-  }, []);
 
-  useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/comments")
       .then((res) => res.json())
       .then((data) => {
         setComments(data);
       });
   }, []);
+
+  const handleClickUser = (user) => {
+    setSelectedUser(user);
+  };
+
+  const filteredPosts = selectedUser
+    ? posts.filter((post) => post.userId === selectedUser.id)
+    : posts;
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -40,6 +45,7 @@ const BlogLayout = () => {
             <li
               key={user.id}
               className="bg-gray-100 hover:bg-gray-100 py-2 px-4 cursor-pointer"
+              onClick={() => handleClickUser(user)}
             >
               <div className="flex items-center">
                 <BiUserCircle className="mr-2" size={24} />
@@ -52,7 +58,7 @@ const BlogLayout = () => {
 
       <div className="w-full md:w-3/4 p-4">
         <h1 className="text-2xl font-bold mb-4">Posts</h1>
-        {posts.map((post) => (
+        {filteredPosts.map((post) => (
           <div key={post.id} className="mb-8">
             <h2 className="text-xl font-bold mb-2">{post.title}</h2>
             <div className="text-gray-500 mb-4">
