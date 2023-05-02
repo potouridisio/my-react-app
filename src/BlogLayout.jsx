@@ -16,7 +16,7 @@ const BlogLayout = () => {
 
   useEffect(() => {
     fetch(
-      `https://jsonplaceholder.typicode.com/posts?userId=${
+      `https://jsonplaceholder.typicode.com/posts${
         selectedUserId ? `?userId=${selectedUserId}` : ""
       }`
     )
@@ -60,9 +60,7 @@ const BlogLayout = () => {
         {posts.map((post) => {
           <div className="mb-8" key={post.id}>
             <h2 className="text-xl font-bold mb-2">{post.title}</h2>
-            <div className="text-gray-500 mb-4">
-              by {users[post.userId].name}
-            </div>
+            <div className="text-gray-500 mb-4">by LeANNE</div>
             <p className="mb-4">{post.body}</p>
             <div className="text-sm text-gray-500 flex items-center">
               <FaComment className="mr-2" size={16} />5
