@@ -6,6 +6,7 @@ const BlogLayout = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -17,7 +18,7 @@ const BlogLayout = () => {
 
   useEffect(() => {
     fetch(
-      `https://jsonplaceholder.typicode.com/posts${
+      `https://jsonplaceholder.typicode.com/posts/${
         selectedUserId ? `?userId=${selectedUserId}` : ""
       }`
     )
@@ -26,6 +27,19 @@ const BlogLayout = () => {
         setPosts(posts);
       });
   }, [selectedUserId]);
+
+  useEffect(() => {
+    fetch(`https://jsonplaceholder.typicode.com/comments`)
+      .then((res) => res.json())
+      .then((comments) => {
+        setComments(comments);
+      });
+  });
+
+  const handleSelect = (userId) => {
+    setSelectedUserId(userId);
+  };
+
   return (
     <div className="flex flex-col md:flex-row">
       <div className="w-full md:w-1/4 p-4">
@@ -34,6 +48,7 @@ const BlogLayout = () => {
         <ul className="divide-y divide-gray-200">
           {users.map((user) => (
             <li
+              onClick={() => handleSelect(user.id)}
               key={user.id}
               className="bg-gray-100 hover:bg-gray-100 py-2 px-4 cursor-pointer"
             >
@@ -55,13 +70,19 @@ const BlogLayout = () => {
             <div key={post.id}>
               <h2 className="text-xl font-bold mb-2">{post.title}</h2>
               <div className="text-gray-500 mb-4">
-                by {users[post.userId].name}
+                by {users[post.userId - 1].name}
               </div>
               <p className="mb-4" key={post.id}>
                 {post.body}
               </p>
+
               <div className="text-sm text-gray-500 flex items-center">
-                <FaComment className="mr-2" size={16} />5 comments {post.id}
+                <FaComment className="mr-2" size={16} />{" "}
+                {
+                  comments.filter((comment) => comment.postId === post.id)
+                    .length
+                }{" "}
+                comments
               </div>
             </div>
           ))}
