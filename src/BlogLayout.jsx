@@ -34,7 +34,7 @@ const BlogLayout = () => {
       .then((comments) => {
         setComments(comments);
       });
-  });
+  }, []);
 
   const handleSelect = (userId) => {
     setSelectedUserId(userId);
