@@ -1,4 +1,5 @@
 export default function UserProfile({
+  errors,
   isProfileChanged,
   onInputChange,
   selectedUser,
@@ -34,6 +35,9 @@ export default function UserProfile({
             type="text"
             value={selectedUser.first_name}
           />
+          {errors.first_name && (
+            <p className="mt-1 text-sm text-red-600">{errors.first_name}</p>
+          )}
         </div>
         <div>
           <label
@@ -50,6 +54,9 @@ export default function UserProfile({
             type="text"
             value={selectedUser.last_name}
           />
+          {errors.last_name && (
+            <p className="mt-1 text-sm text-red-600">{errors.last_name}</p>
+          )}
         </div>
         <div>
           <label
@@ -66,6 +73,9 @@ export default function UserProfile({
             type="email"
             value={selectedUser.email}
           />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+          )}
         </div>
         {isProfileChanged && (
           <div className="flex items-center">

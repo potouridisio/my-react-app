@@ -5,6 +5,7 @@ import UserProfile from "./components/UserProfile";
 import api from "./lib/api";
 
 export default function App() {
+  const [errors, setErrors] = useState({});
   const [isProfileChanged, setIsProfileChanged] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -33,12 +34,35 @@ export default function App() {
     }
   }, [selectedUser, users]);
 
+  const validate = (name, value) => {
+    let error = "";
+
+    if (!value) {
+      error = "This field is required.";
+    } else if (name === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        error = "Please enter a valid email address.";
+      }
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+
+    return error;
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
     setSelectedUser({
       ...selectedUser,
       [name]: value,
     });
+
+    validate(name, value);
   };
 
   const handleSave = () => {
@@ -59,9 +83,14 @@ export default function App() {
       />
       {/* Main Content */}
       <main className="flex-1 bg-white p-6">
-        <Header isProfileChanged={isProfileChanged} onSave={handleSave} />
+        <Header
+          errors={errors}
+          isProfileChanged={isProfileChanged}
+          onSave={handleSave}
+        />
         {selectedUser ? (
           <UserProfile
+            errors={errors}
             isProfileChanged={isProfileChanged}
             onInputChange={handleInputChange}
             selectedUser={selectedUser}
